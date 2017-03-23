@@ -14,10 +14,13 @@ class Element:
 
     def set_from(self, f):
         self.From = f
-    
+
     def set_voltage(self, v):
         self.Voltage = v
-        
+
+    def get_name(self):
+        return self.Name
+
 
 # Класс для источников тока
 class I(Element):
@@ -79,14 +82,16 @@ class Node:
     def set_voltage(self, v):
         self.Voltage = v
 
+
 # Класс для цепи
 class Chain:
     Nodes = []  # Список узлов в цепи (включая устранимые)
     Nodes_count = None  # Количество узлов в цепи (включая устранимые)
-    Elements = []   # Список элементов цепи
-    Elements_count = None   # Количество элементов в цепи
+    Elements = []  # Список элементов цепи
+    Elements_count = None  # Количество элементов в цепи
 
-    def outputChain(self):
+    @staticmethod
+    def output_chain():
         i = 0
         for i in range(0, Chain.Elements_count):
             print()
@@ -104,6 +109,8 @@ class Chain:
                 print("?", end=' ')
             else:
                 print(Chain.Elements[i].Amperage, "А", end=' ')
+            if hasattr(Chain.Elements[i], 'Resistance'):
+                print("Сопр: ", Chain.Elements[i].Resistance, "Ом", end=' ')
             if hasattr(Chain.Elements[i], 'Capacity'):
                 print("Эл.ёмкость: ", Chain.Elements[i].Capacity, "Ф", end=' ')
             if hasattr(Chain.Elements[i], 'Inductance'):

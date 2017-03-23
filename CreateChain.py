@@ -7,23 +7,23 @@ def create_element(typ):
     element = None
     if typ == 'V':
         n = input("Введите имя элемента: ")
-        v = input("Введите напряжение элемента: ")
+        v = int(input("Введите напряжение элемента: "))
         element = Classes.V(n, v)
     elif typ == 'I':
         n = input("Введите имя элемента: ")
-        a = input("Введите силу тока элемента: ")
+        a = int(input("Введите силу тока элемента: "))
         element = Classes.I(n, a)
     elif typ == 'R':
         n = input("Введите имя элемента: ")
-        r = input("Введите сопротивление элемента: ")
+        r = int(input("Введите сопротивление элемента: "))
         element = Classes.R(n, r)
     elif typ == 'C':
         n = input("Введите имя элемента: ")
-        c = input("Введите ёмкость элемента: ")
+        c = int(input("Введите ёмкость элемента: "))
         element = Classes.C(n, c)
     elif typ == 'L':
         n = input("Введите имя элемента: ")
-        l = input("Введите индуктивность элемента: ")
+        l = int(input("Введите индуктивность элемента: "))
         element = Classes.L(n, l)
     return element
 
@@ -35,7 +35,7 @@ def create_chain():
     i = 0
     while i < chain.Nodes_count:
         chain.Nodes.append(i)
-        #Classes.Node.append(i)
+        # Classes.Node.append(i)
         chain.Nodes[i] = Classes.Node(i + 1)
         i += 1
     chain.Elements_count = int(input("Введите количество элементов в цепи: "))
@@ -65,6 +65,48 @@ def create_chain():
                 break
     return chain
 
+def defaultchain():
+    chain = Classes.Chain
+    chain.Nodes_count = 3
+    i = 0
+    while i < chain.Nodes_count:
+        chain.Nodes.append(i)
+        chain.Nodes[i] = Classes.Node(i + 1)
+        i += 1
+
+    chain.Elements_count = 5
+    chain.Elements.append(0)
+    chain.Elements[0] = Classes.R('R', 2)
+    chain.Elements.append(1)
+    chain.Elements[1] = Classes.R('R', 1)
+    chain.Elements.append(2)
+    chain.Elements[2] = Classes.V('V', 58)
+    chain.Elements.append(3)
+    chain.Elements[3] = Classes.R('R', 2)
+    chain.Elements.append(4)
+    chain.Elements[4] = Classes.R('R', 20)
+
+    chain.Nodes[0].set_to(chain.Elements[2])
+    chain.Elements[2].set_from(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[0])
+    chain.Elements[0].set_to(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[3])
+    chain.Elements[3].set_to(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[4])
+    chain.Elements[4].set_to(chain.Nodes[0])
+    chain.Nodes[1].set_to(chain.Elements[0])
+    chain.Elements[0].set_from(chain.Nodes[1])
+    chain.Nodes[1].set_from(chain.Elements[1])
+    chain.Elements[1].set_to(chain.Nodes[1])
+    chain.Nodes[2].set_to(chain.Elements[1])
+    chain.Elements[1].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_to(chain.Elements[3])
+    chain.Elements[3].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_to(chain.Elements[4])
+    chain.Elements[4].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_from(chain.Elements[2])
+    chain.Elements[2].set_to(chain.Nodes[2])
+    return chain
 
 __all__ = {'Classes', Classes.Element, Classes.I, Classes.V, Classes.R, Classes.L, Classes.C, Classes.Chain,
            Classes.Node}
