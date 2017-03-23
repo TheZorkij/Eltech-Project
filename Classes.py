@@ -14,7 +14,10 @@ class Element:
 
     def set_from(self, f):
         self.From = f
-
+    
+    def set_voltage(self, v):
+        self.Voltage = v
+        
 
 # Класс для источников тока
 class I(Element):
