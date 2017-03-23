@@ -34,28 +34,34 @@ def create_chain():
     chain.Nodes_count = int(input("Введите количество узлов в цепи: "))
     i = 0
     while i < chain.Nodes_count:
+        chain.Nodes.append(i)
+        #Classes.Node.append(i)
         chain.Nodes[i] = Classes.Node(i + 1)
+        i += 1
     chain.Elements_count = int(input("Введите количество элементов в цепи: "))
     i = 0
     while i < chain.Elements_count:
         typ = input("Введите тип элемента (V/I/R/C/L): ")
+        chain.Elements.append(i)
         chain.Elements[i] = create_element(typ)
-    for i in chain.Nodes:
+        i += 1
+    i = 0
+    for i in range(0, chain.Nodes_count):
         while 1:
             print("Введите номер элемента, в который втекает ток из", i, "-го узла: ")
-            number = input()
+            number = int(input())
             chain.Nodes[i].set_to(chain.Elements[number - 1])
             chain.Elements[number - 1].set_from(chain.Nodes[i])
-            answer = input("Из узла вытекает ток ещё в одном направлении?")
-            if answer == 'Нет' or answer == 'нет':
+            answer = input("Из узла вытекает ток ещё в одном направлении? (y/n) Ввод: ")
+            if answer == 'N' or answer == 'n':
                 break
         while 1:
             print("Введите номер элемента, из которого втекает ток в", i, "-й узел: ")
-            number = input()
+            number = int(input())
             chain.Nodes[i].set_from(chain.Elements[number - 1])
             chain.Elements[number - 1].set_to(chain.Nodes[i])
-            answer = input("В узел втекает ещё ток?")
-            if answer == 'Нет' or answer == 'нет':
+            answer = input("В узел втекает ещё ток? (y/n) Ввод: ")
+            if answer == 'N' or answer == 'n':
                 break
     return chain
 
