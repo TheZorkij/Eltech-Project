@@ -7,7 +7,7 @@ import Classes
 import CreateChain
 
 chain = CreateChain.create_chain()
-
+Classes.Chain.outputChain(chain)
 
 __all__ = ['Classes', Classes.Element, Classes.I, Classes.V, Classes.R, Classes.L, Classes.C, Classes.Chain,
            Classes.Node]

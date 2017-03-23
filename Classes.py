@@ -82,3 +82,24 @@ class Chain:
     Nodes_count = None  # Количество узлов в цепи (включая устранимые)
     Elements = []   # Список элементов цепи
     Elements_count = None   # Количество элементов в цепи
+
+    def outputChain(self):
+        i = 0
+        for i in range(0, Chain.Elements_count):
+            print()
+            print(i, end='')
+            print(Chain.Elements[i].To.Key, end='')
+            print(Chain.Elements[i].From.Key, end=' ')
+            print(Chain.Elements[i].Name, end=' ')
+            print("Напр:", end=' ')
+            if Chain.Elements[i].Voltage is None:
+                print("?", end=' ')
+            else: print(Chain.Elements[i].Voltage, "В", end=' ')
+            print("Ток:", end=' ')
+            if Chain.Elements[i].Amperage is None:
+                print("?", end=' ')
+            else: print(Chain.Elements[i].Amperage, "А", end=' ')
+            if hasattr(Chain.Elements[i], 'Capacity'):
+                print("Эл.ёмкость: ", Chain.Elements[i].Capacity, "Ф", end=' ')
+            if hasattr(Chain.Elements[i], 'Inductance'):
+                print("Индуктивность: ",Chain.Elements[i].Inductance, "Гн", end='')
