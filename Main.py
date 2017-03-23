@@ -6,8 +6,12 @@
 
 import Classes
 import CreateChain
+import MeshMethod
 
 chain = CreateChain.create_chain()
+chain.output_chain()
+MeshMethod.mesh_method(chain)
+chain.output_chain()
 
 
 __all__ = ['Classes', Classes.Element, Classes.I, Classes.V, Classes.R, Classes.L, Classes.C, Classes.Chain,
