@@ -14,7 +14,10 @@ class Element:
 
     def set_from(self, f):
         self.From = f
-
+    
+    def set_voltage(self, v):
+        self.Voltage = v
+        
 
 # Класс для источников тока
 class I(Element):
@@ -94,12 +97,14 @@ class Chain:
             print("Напр:", end=' ')
             if Chain.Elements[i].Voltage is None:
                 print("?", end=' ')
-            else: print(Chain.Elements[i].Voltage, "В", end=' ')
+            else:
+                print(Chain.Elements[i].Voltage, "В", end=' ')
             print("Ток:", end=' ')
             if Chain.Elements[i].Amperage is None:
                 print("?", end=' ')
-            else: print(Chain.Elements[i].Amperage, "А", end=' ')
+            else:
+                print(Chain.Elements[i].Amperage, "А", end=' ')
             if hasattr(Chain.Elements[i], 'Capacity'):
                 print("Эл.ёмкость: ", Chain.Elements[i].Capacity, "Ф", end=' ')
             if hasattr(Chain.Elements[i], 'Inductance'):
-                print("Индуктивность: ",Chain.Elements[i].Inductance, "Гн", end='')
+                print("Индуктивность: ", Chain.Elements[i].Inductance, "Гн", end='')
