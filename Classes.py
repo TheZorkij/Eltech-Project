@@ -18,6 +18,9 @@ class Element:
     def set_voltage(self, v):
         self.Voltage = v
 
+    def set_amperage(self, a):
+        self.Amperage = a
+
     def get_name(self):
         return self.Name
 
@@ -83,6 +86,20 @@ class Node:
         self.Voltage = v
 
 
+# Класс для холостого хода
+class Idling:
+    From = None
+
+    def __init__(self, f):
+        self.From = f
+
+
+# Класс для короткого замыкания
+class ShortCircuit:
+    From = None
+    To = None
+
+
 # Класс для цепи
 class Chain:
     Nodes = []  # Список узлов в цепи (включая устранимые)
@@ -92,7 +109,6 @@ class Chain:
 
     @staticmethod
     def output_chain():
-        i = 0
         for i in range(0, Chain.Elements_count):
             print()
             print(i, end='')

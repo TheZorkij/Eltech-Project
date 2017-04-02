@@ -45,7 +45,6 @@ def create_chain():
         chain.Elements.append(i)
         chain.Elements[i] = create_element(typ)
         i += 1
-    i = 0
     for i in range(0, chain.Nodes_count):
         while 1:
             print("Введите номер элемента, в который втекает ток из", i, "-го узла: ")
