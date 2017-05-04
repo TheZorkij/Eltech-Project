@@ -22,45 +22,50 @@ def mesh_method(chain):
     # Заполняем собственные проводимости узлов
     for i in range(0, chain.Nodes_count):
             for j in range(0, len(chain.Nodes[i].To)):
-                if chain.Nodes[i].To[j] == 'R':
-                    a[i, i] += 1/chain.Nodes.To[i].R
+                if hasattr(chain.Nodes[i].To[j], 'Resistance'):
+                    a[i, i] += 1/chain.Nodes[i].To[j].Resistance
             for j in range(0, len(chain.Nodes[i].From)):
-                if chain.Nodes[i].From[j] == 'R':
-                    a[i, i] += 1/chain.Nodes.From[i].R
+                if hasattr(chain.Nodes[i].From[j], 'Resistance'):
+                    a[i, i] += 1/chain.Nodes[i].From[j].Resistance
     # Заполняем остальные поля матрицы коэффициентов
-    for i in chain.Elements:
-        if i.Name == 'R':
-            a[chain.Nodes.index(i.To), chain.Nodes.index(i.From)] += 1/i.Resistance
-            a[chain.Nodes.index(i.From), chain.Nodes.index(i.To)] += 1/i.Resistance
+    for i in range(0, chain.Elements_count):
+        if chain.Elements[i].Name == 'R':
+            a[chain.Nodes.index(chain.Elements[i].To), chain.Nodes.index(chain.Elements[i].From)] += 1 / chain.Elements[
+                i].Resistance
+            a[chain.Nodes.index(chain.Elements[i].From), chain.Nodes.index(chain.Elements[i].To)] += 1 / chain.Elements[
+                i].Resistance
     # Удаляем столбец с коэффициентами напряжения базового узла
-    numpy.delete(a, base_node, axis=1)
+    a = numpy.delete(a, base_node, 1)
+    a = numpy.delete(a, base_node, 0)
     # Удаляем столбец с коэффициентами напряжения узла, равному напряжению ИН (если такой есть)
-    for i in chain.Nodes:
-        if i.Voltage != 0 and i.Voltage is not None:
-            numpy.delete(a, i, axis=1)
     # Заполняем столбец ответов системы уравнений
     b = numpy.zeros((chain.Nodes_count, 1))
     for i in range(0, chain.Nodes_count):
         if chain.Nodes[i].Voltage is None:
             for j in range(0, len(chain.Nodes[i].To)):
                 if chain.Nodes[i].To[j].Name == 'I':
-                    b[i] += chain.Nodes[i].To[j].Amperage
+                    b[i] = b[i] + chain.Nodes[i].To[j].Amperage
             for j in range(0, len(chain.Nodes[i].From)):
-                if chain.Nodes[i].From[j].Name == 'V':
-                    b[i] -= chain.Nodes[i].From[j].Amperage
+                if chain.Nodes[i].From[j].Name == 'I':
+                    b[i] = b[i] - chain.Nodes[i].From[j].Amperage
     # Удаляем строку с током базового узла
-    numpy.delete(a, base_node, axis=0)
+    b = numpy.delete(b, base_node, 0)
     # Удаляем строку с токами узла, равного по напряжению ИН (если такой есть)
-    for i in chain.Nodes:
-        if i.Voltage != 0 and i.Voltage is not None:
-            numpy.delete(a, i, axis=0)
+    for i in range(0, chain.Nodes_count):
+        if chain.Nodes[i].Voltage != 0 and chain.Nodes[i].Voltage is not None:
+            for j in range(0, len(b)):
+                b[j] += a[i, j] * chain.Nodes[i].Voltage
+            a = numpy.delete(a, i, 0)
+            a = numpy.delete(a, i, 1)
+            b = numpy.delete(b, i, 0)
     # Решаем систему уравнений
-    v = numpy.linalg.solve(a, b)
+    if b is not None:
+        v = numpy.linalg.solve(a, b)
     # Записываем узловые напряжения в соответствующие узлы
     for i in chain.Nodes:
-        j = 1
+        j = 0
         if i.Voltage is None:
-            i.set_voltage(v[j])
+            i.set_voltage(int(v[j]))
             j += 1
     # Вычисляем напряжения элементов цепи
     for i in chain.Elements:
@@ -69,17 +74,21 @@ def mesh_method(chain):
     for i in chain.Elements:
         if hasattr(i, 'Resistance'):
             i.set_amperage(i.Voltage/i.Resistance)
-    # Вычисляем силу тока в
+    # Вычисляем силу тока в источнике
     a = 0
     for i in chain.Elements:
-        if i.get_name() == 'V' or i.get_name() == 'I':
+        if i.get_name() == 'V':
             for j in i.To.To:
-                a += j.amperage
+                if hasattr(i, 'Amperage'):
+                    a += j.Amperage
             for j in i.To.From:
-                a -= j.amperage
+                if hasattr(i, 'Amperage') and i.Amperage is not None:
+                    a -= j.Amperage
+            i.set_amperage(a)
             break
     else:
         print("В цепи нет источника О_О")
+
     return chain
 
 __all__ = ['Classes', Classes.Element, Classes.I, Classes.V, Classes.R, Classes.L, Classes.C, Classes.Chain,
