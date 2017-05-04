@@ -17,7 +17,13 @@ class Element:
     
     def set_voltage(self, v):
         self.Voltage = v
-        
+
+    def set_amperage(self, a):
+        self.Amperage = a
+
+    def get_name(self):
+        return self.Name
+
 
 # Класс для источников тока
 class I(Element):
@@ -60,12 +66,31 @@ class L(Element):
         self.Inductance = i
 
 
+# Класс для холостого хода
+class Idling(Element):
+    From = None
+    Amperage = 0
+
+    def __init__(self, f):
+        self.From = f
+
+
+# Класс для короткого замыкания
+class SC(Element):
+    Voltage = 0
+    From = None
+    To = None
+
+    def __init__(self, t, f):
+        self.From = f
+        self.To = t
+
 # Класс для узлов
 class Node:
     Voltage = None
     Key = None  # Ключ узла (номер)
-    To = []  # Куда вытекает ток из узла
-    From = []  # Откуда втекает ток в узел
+    To = None  # Куда вытекает ток из узла
+    From = None  # Откуда втекает ток в узел
 
     def __init__(self, k):
         self.Key = k
@@ -79,6 +104,7 @@ class Node:
     def set_voltage(self, v):
         self.Voltage = v
 
+
 # Класс для цепи
 class Chain:
     Nodes = []  # Список узлов в цепи (включая устранимые)
@@ -86,8 +112,8 @@ class Chain:
     Elements = []   # Список элементов цепи
     Elements_count = None   # Количество элементов в цепи
 
-    def outputChain(self):
-        i = 0
+    @staticmethod
+    def output_chain():
         for i in range(0, Chain.Elements_count):
             print()
             print(i, end='')
@@ -104,6 +130,8 @@ class Chain:
                 print("?", end=' ')
             else:
                 print(Chain.Elements[i].Amperage, "А", end=' ')
+            if hasattr(Chain.Elements[i], 'Resistance'):
+                print("Сопротивление: ", Chain.Elements[i].Resistance, "Ом", end=' ')
             if hasattr(Chain.Elements[i], 'Capacity'):
                 print("Эл.ёмкость: ", Chain.Elements[i].Capacity, "Ф", end=' ')
             if hasattr(Chain.Elements[i], 'Inductance'):
