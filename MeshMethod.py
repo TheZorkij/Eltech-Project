@@ -51,7 +51,7 @@ def mesh_method(chain):
     # Удаляем строку с током базового узла
     b = numpy.delete(b, base_node, 0)
     # Удаляем строку с токами узла, равного по напряжению ИН (если такой есть)
-    for i in range(0, chain.Nodes_count):
+    for i in range(1, chain.Nodes_count):
         if chain.Nodes[i].Voltage != 0 and chain.Nodes[i].Voltage is not None:
             for j in range(0, len(b)):
                 b[j] += a[i, j] * chain.Nodes[i].Voltage
@@ -69,7 +69,8 @@ def mesh_method(chain):
             j += 1
     # Вычисляем напряжения элементов цепи
     for i in chain.Elements:
-        i.set_voltage(i.From.Voltage - i.To.Voltage)
+        if i.Voltage is None:
+            i.set_voltage(i.From.Voltage - i.To.Voltage)
     # Вычисляем силу тока во всех R-элементах цепи
     for i in chain.Elements:
         if hasattr(i, 'Resistance'):
@@ -79,10 +80,10 @@ def mesh_method(chain):
     for i in chain.Elements:
         if i.get_name() == 'V':
             for j in i.To.To:
-                if hasattr(i, 'Amperage'):
+                if hasattr(j, 'Amperage') and j.Amperage is not None:
                     a += j.Amperage
             for j in i.To.From:
-                if hasattr(i, 'Amperage') and i.Amperage is not None:
+                if hasattr(j, 'Amperage') and j.Amperage is not None:
                     a -= j.Amperage
             i.set_amperage(a)
             break
