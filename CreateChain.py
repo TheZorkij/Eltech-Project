@@ -30,7 +30,7 @@ def create_element(typ):
 
 # Функция создания электрической цепи
 def create_chain():
-    chain = Classes.Chain
+    chain = Classes.Chain()
     chain.Nodes_count = int(input("Введите количество узлов в цепи: "))
     i = 0
     while i < chain.Nodes_count:
@@ -67,7 +67,7 @@ def create_chain():
     return chain
 
 
-def defaultchain():
+def default_chain():
     chain = Classes.Chain
     chain.Nodes_count = 3
     i = 0
@@ -78,11 +78,11 @@ def defaultchain():
         i += 1
 
     chain.Elements_count = 5
-    chain.Elements.append(Classes.R('R', 2))
-    chain.Elements.append(Classes.R('R', 1))
+    chain.Elements.append(Classes.R('R', 2000))
+    chain.Elements.append(Classes.R('R', 1000))
     chain.Elements.append(Classes.V('V', 58))
-    chain.Elements.append(Classes.R('R', 2))
-    chain.Elements.append(Classes.R('R', 20))
+    chain.Elements.append(Classes.R('R', 2000))
+    chain.Elements.append(Classes.R('R', 20000))
 
 
     chain.Nodes[0].set_to(chain.Elements[2])
@@ -111,7 +111,7 @@ def defaultchain():
     return chain
 
 
-def defaultchain2():
+def default_chain2():
     chain = Classes.Chain
     chain.Nodes_count = 3
     i = 0
@@ -125,15 +125,15 @@ def defaultchain2():
     chain.Elements.append(0)
     chain.Elements[0] = Classes.V('V', 15)
     chain.Elements.append(1)
-    chain.Elements[1] = Classes.R('R', 2)
+    chain.Elements[1] = Classes.R('R', 2000)
     chain.Elements.append(2)
-    chain.Elements[2] = Classes.R('R', 1)
+    chain.Elements[2] = Classes.R('R', 1000)
     chain.Elements.append(3)
     chain.Elements[3] = Classes.V('V', 58)
     chain.Elements.append(4)
-    chain.Elements[4] = Classes.R('R', 2)
+    chain.Elements[4] = Classes.R('R', 2000)
     chain.Elements.append(5)
-    chain.Elements[5] = Classes.R('R', 20)
+    chain.Elements[5] = Classes.R('R', 20000)
 
     chain.Nodes[0].set_to(chain.Elements[3])
     chain.Elements[3].set_from(chain.Nodes[0])
