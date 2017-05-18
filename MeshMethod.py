@@ -9,9 +9,9 @@ def mesh_method(chain):
     # Выбираем базовый узел, так, чтобы он находился со стороны отрицательной полярности ИН
     for i in chain.Elements:
         if i.get_name() == "V":
-            i.To.set_voltage(0)
-            i.From.set_voltage(i.Voltage)
-            base_node = chain.Nodes.index(i.To)
+            i.To.set_voltage(i.Voltage)
+            i.From.set_voltage(0)
+            base_node = chain.Nodes.index(i.From)
             break
     # Если в цепи отсутствует ИН, то базовым узлом назначется первый узел в списке узлов
     else:
@@ -51,19 +51,19 @@ def mesh_method(chain):
     # Удаляем строку с током базового узла
     b = numpy.delete(b, base_node, 0)
     # Удаляем строку с токами узла, равного по напряжению ИН (если такой есть)
-    for i in range(1, chain.Nodes_count):
+    for i in range(0, chain.Nodes_count):
         if chain.Nodes[i].Voltage != 0 and chain.Nodes[i].Voltage is not None:
-            for j in range(0, len(b)):
-                b[j] += a[i, j] * chain.Nodes[i].Voltage
-            a = numpy.delete(a, i, 0)
-            a = numpy.delete(a, i, 1)
-            b = numpy.delete(b, i, 0)
+            for j in range(0, len(b) - 1):
+                b[j] += a[i - 1, j] * chain.Nodes[i].Voltage
+            a = numpy.delete(a, i - 1, 0)
+            a = numpy.delete(a, i - 1, 1)
+            b = numpy.delete(b, i - 1, 0)
     # Решаем систему уравнений
     if b is not None:
         v = numpy.linalg.solve(a, b)
     # Записываем узловые напряжения в соответствующие узлы
+    j = 0
     for i in chain.Nodes:
-        j = 0
         if i.Voltage is None:
             i.set_voltage(int(v[j]))
             j += 1
