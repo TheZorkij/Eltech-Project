@@ -68,8 +68,7 @@ def create_chain():
 
 
 def default_chain():
-    chain = Classes.Chain
-    chain.Nodes_count = 3
+    chain = Classes.Chain(3, 5)
     i = 0
     while i < chain.Nodes_count:
         chain.Nodes.append(Classes.Node(i + 1))
@@ -77,12 +76,11 @@ def default_chain():
         chain.Nodes[i].From = []
         i += 1
 
-    chain.Elements_count = 5
-    chain.Elements.append(Classes.R('R', 2000))
-    chain.Elements.append(Classes.R('R', 1000))
-    chain.Elements.append(Classes.V('V', 58))
-    chain.Elements.append(Classes.R('R', 2000))
-    chain.Elements.append(Classes.R('R', 20000))
+    chain.Elements.append(Classes.R('R', 2000, 0))
+    chain.Elements.append(Classes.R('R', 1000, 1))
+    chain.Elements.append(Classes.V('V', 58, 2))
+    chain.Elements.append(Classes.R('R', 2000, 3))
+    chain.Elements.append(Classes.R('R', 20000, 4))
 
 
     chain.Nodes[0].set_to(chain.Elements[2])
@@ -112,8 +110,8 @@ def default_chain():
 
 
 def default_chain2():
-    chain = Classes.Chain
-    chain.Nodes_count = 3
+    chain = Classes.Chain(3, 6)
+    #chain.Nodes_count = 3
     i = 0
     while i < chain.Nodes_count:
         chain.Nodes.append(Classes.Node(i + 1))
@@ -121,19 +119,19 @@ def default_chain2():
         chain.Nodes[i].From = []
         i += 1
 
-    chain.Elements_count = 6
+    #chain.Elements_count = 6
     chain.Elements.append(0)
-    chain.Elements[0] = Classes.V('V', 15)
+    chain.Elements[0] = Classes.V('V', 15, 0)
     chain.Elements.append(1)
-    chain.Elements[1] = Classes.R('R', 2000)
+    chain.Elements[1] = Classes.R('R', 2000, 1)
     chain.Elements.append(2)
-    chain.Elements[2] = Classes.R('R', 1000)
+    chain.Elements[2] = Classes.R('R', 1000, 2)
     chain.Elements.append(3)
-    chain.Elements[3] = Classes.V('V', 58)
+    chain.Elements[3] = Classes.V('V', 58, 3)
     chain.Elements.append(4)
-    chain.Elements[4] = Classes.R('R', 2000)
+    chain.Elements[4] = Classes.R('R', 2000, 4)
     chain.Elements.append(5)
-    chain.Elements[5] = Classes.R('R', 20000)
+    chain.Elements[5] = Classes.R('R', 20000, 5)
 
     chain.Nodes[0].set_to(chain.Elements[3])
     chain.Elements[3].set_from(chain.Nodes[0])
@@ -148,6 +146,9 @@ def default_chain2():
     chain.Elements[4].set_to(chain.Nodes[0])
     chain.Nodes[0].set_from(chain.Elements[5])
     chain.Elements[5].set_to(chain.Nodes[0])
+
+    chain.Nodes[1].set_to(chain.Elements[0])
+
     chain.Nodes[1].set_to(chain.Elements[1])
     chain.Elements[1].set_from(chain.Nodes[1])
     chain.Nodes[1].set_from(chain.Elements[2])
@@ -160,6 +161,50 @@ def default_chain2():
     chain.Elements[5].set_from(chain.Nodes[2])
     chain.Nodes[2].set_from(chain.Elements[3])
     chain.Elements[3].set_to(chain.Nodes[2])
+    return chain
+
+
+def default_chain_abcd():
+    chain = Classes.Chain()
+    chain.Nodes_count = 4
+    i = 0
+    while i < chain.Nodes_count:
+        chain.Nodes.append(Classes.Node(i + 1))
+        chain.Nodes[i].To = []
+        chain.Nodes[i].From = []
+        i += 1
+
+    chain.Elements_count = 6
+    chain.Elements.append(Classes.V('V', 1))
+    chain.Elements.append(Classes.R('R', 1000))
+    chain.Elements.append(Classes.R('R', 2000))
+    chain.Elements.append(Classes.R('R', 3000))
+    chain.Elements.append(Classes.C('C', 0.000001))
+
+
+    chain.Nodes[0].set_to(chain.Elements[2])
+    chain.Elements[2].set_from(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[0])
+    chain.Elements[0].set_to(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[3])
+    chain.Elements[3].set_to(chain.Nodes[0])
+    chain.Nodes[0].set_from(chain.Elements[4])
+    chain.Elements[4].set_to(chain.Nodes[0])
+    chain.Nodes[1].set_to(chain.Elements[0])
+    chain.Elements[0].set_from(chain.Nodes[1])
+    chain.Nodes[1].set_from(chain.Elements[1])
+    chain.Elements[1].set_to(chain.Nodes[1])
+    chain.Nodes[2].set_to(chain.Elements[1])
+    chain.Elements[1].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_to(chain.Elements[3])
+    chain.Elements[3].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_to(chain.Elements[4])
+    chain.Elements[4].set_from(chain.Nodes[2])
+    chain.Nodes[2].set_from(chain.Elements[2])
+    chain.Elements[2].set_to(chain.Nodes[2])
+
+    #print(chain.Nodes[0].From)
+
     return chain
 
 

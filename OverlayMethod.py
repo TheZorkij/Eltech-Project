@@ -3,6 +3,7 @@
 import Classes
 import MeshMethod
 import copy
+import CopyChain
 
 def overlay_method(chain):
     step_count = 0
@@ -18,21 +19,24 @@ def overlay_method(chain):
     step_voltages = [[0 for x in range(0, chain.Elements_count)] for y in range(step_count)]
     step_currents = [[0 for x in range(0, chain.Elements_count)] for y in range(step_count)]
 
+    #newchain = chain
     #for step in range(0, step_count):
-    stepchain = Classes.Chain()
-    stepchain.Nodes = list(chain.Nodes)
-    stepchain.Elements = list(chain.Elements)
+    """stepchain = Classes.Chain(chain.Nodes_count, chain.Elements_count)
+    stepchain.Nodes = chain.Nodes[:]
+    stepchain.Elements = chain.Elements[:]
     for i in range(0, chain.Nodes_count):
-        stepchain.Nodes[i].From = list(stepchain.Nodes[i].From)
-        stepchain.Nodes[i].To = list(stepchain.Nodes[i].To)
-    stepchain.Elements = list(chain.Elements)
-    stepchain.Elements_count = chain.Elements_count
-    stepchain.Nodes_count = chain.Nodes_count
-    print(id(stepchain.Elements_count))
-    print(id(chain.Elements_count))
+        stepchain.Nodes[i].From = chain.Nodes[i].From[:]
+        stepchain.Nodes[i].To = chain.Nodes[i].To[:]
+    stepchain.Elements = chain.Elements[:]
+    #stepchain.Elements_count = chain.Elements_count
+    #stepchain.Nodes_count = chain.Nodes_count
+    #print(stepchain.Elements[0].To)"""
+    stepchain = CopyChain.copy_chain(chain)
+    #print(chain.Nodes[1].To)
+    #Classes.Chain.output_chain(stepchain)
 
-    sc_from = stepchain.Elements[v_index[1]].From
-    sc_to = stepchain.Elements[v_index[1]].To
+    sc_from = stepchain.Elements[v_index[0]].From
+    sc_to = stepchain.Elements[v_index[0]].To
     for j in range(0, stepchain.Elements_count):
         if stepchain.Elements[j].From == sc_from and stepchain.Elements[j].To == sc_to:
             stepchain.Elements[j].From = stepchain.Elements[j].To
@@ -98,5 +102,8 @@ def overlay_method(chain):
     print(step_currents)
     print(step_voltages)"""
 
+    #print(stepchain.Nodes[2].From)
+    Classes.Chain.output_chain(stepchain)
     print()
-    stepchain.output_chain()
+    Classes.Chain.output_chain(chain)
+    #stepchain.output_chain()
