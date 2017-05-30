@@ -41,6 +41,6 @@ def copy_chain(chain):
         t = chain.Elements[i].To.Key
         newchain.Elements[i].set_from(newchain.Nodes[f-1])
         newchain.Elements[i].set_to(newchain.Nodes[t-1])
-    print(newchain.Nodes)
+    #print(newchain.Nodes)
 
     return newchain

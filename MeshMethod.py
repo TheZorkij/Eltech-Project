@@ -9,9 +9,9 @@ def mesh_method(chain):
     # Выбираем базовый узел, так, чтобы он находился со стороны отрицательной полярности ИН
     for i in chain.Elements:
         if i.get_name() == "V":
-            print(i.From)
             i.To.set_voltage(i.Voltage)
             i.From.set_voltage(0)
+            #print(chain.Nodes.index(i.From))
             base_node = chain.Nodes.index(i.From)
             break
     # Если в цепи отсутствует ИН, то базовым узлом назначется первый узел в списке узлов

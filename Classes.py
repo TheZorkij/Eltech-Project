@@ -124,6 +124,19 @@ class Chain:
         self.Nodes_count = n
         self.Elements_count = e
 
+    """def __del__(self):
+        print("aaa")
+        i = 0
+        while i < self.Nodes_count:
+            del self.Nodes[i].To
+            del self.Nodes[i].From
+            i += 1
+        del self.Nodes
+        del self.Elements
+        self.Elements_count = None
+        self.Nodes_count = None
+        del self"""
+
     @staticmethod
     def output_chain(chain):
         for i in range(0, chain.Elements_count):

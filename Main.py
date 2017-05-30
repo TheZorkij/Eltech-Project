@@ -11,13 +11,8 @@ import CopyChain
 import copy
 
 chain = CreateChain.default_chain2()
-#chain2 = CopyChain.copy_chain(chain)
-#chain = CreateChain.create_chain()
-#print(chain.Elements[2].From)
-#MeshMethod.mesh_method(chain2)
-#MeshMethod.mesh_method(chain2)
 OverlayMethod.overlay_method(chain)
-#Classes.Chain.output_chain(chain)
+Classes.Chain.output_chain(chain)
 
 __all__ = ['Classes', Classes.Element, Classes.I, Classes.V, Classes.R, Classes.L, Classes.C, Classes.SC, Classes.Chain,
            Classes.Node]
