@@ -22,9 +22,13 @@ def copy_chain(chain):
         if chain.Elements[i].Name == 'R':
             newchain.Elements.append(Classes.R('R', chain.Elements[i].Resistance, i))
         if chain.Elements[i].Name == 'V':
-            newchain.Elements.append(Classes.V('V', copy.deepcopy(chain.Elements[i].Voltage), i))
+            newchain.Elements.append(Classes.V('V', chain.Elements[i].Voltage, i))
         if chain.Elements[i].Name == 'I':
-            newchain.Elements.append(Classes.I('I', copy.deepcopy(chain.Elements[i].Amperage)))
+            newchain.Elements.append(Classes.I('I', chain.Elements[i].Amperage, i))
+        if chain.Elements[i].Name == 'C':
+            newchain.Elements.append(Classes.C('C', chain.Elements[i].Capacity, i))
+        if chain.Elements[i].Name == 'L':
+            newchain.Elements.append(Classes.L('L', chain.Elements[i].Inductance, i))
         #print(id(newchain.Elements[i]))
         #print(id(chain.Elements[i]))
 

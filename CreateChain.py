@@ -78,7 +78,7 @@ def default_chain():
 
     chain.Elements.append(Classes.R('R', 2000, 0))
     chain.Elements.append(Classes.R('R', 1000, 1))
-    chain.Elements.append(Classes.V('V', 58, 2))
+    chain.Elements.append(Classes.V('I', 58, 2))
     chain.Elements.append(Classes.R('R', 2000, 3))
     chain.Elements.append(Classes.R('R', 20000, 4))
 
@@ -127,7 +127,7 @@ def default_chain2():
     chain.Elements.append(2)
     chain.Elements[2] = Classes.R('R', 1000, 2)
     chain.Elements.append(3)
-    chain.Elements[3] = Classes.V('V', 58, 3)
+    chain.Elements[3] = Classes.C('C', 58, 3)
     chain.Elements.append(4)
     chain.Elements[4] = Classes.R('R', 2000, 4)
     chain.Elements.append(5)

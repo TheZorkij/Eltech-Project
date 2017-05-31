@@ -27,9 +27,10 @@ class Element:
 
 # Класс для источников тока
 class I(Element):
-    def __init__(self, n, a):
+    def __init__(self, n, a, i):
         self.Name = n
         self.Amperage = a
+        self.Num = i
 
 
 # Класс для источников напряжения
@@ -54,18 +55,20 @@ class R(Element):
 class C(Element):
     Capacity = None  # Ёмкость
 
-    def __init__(self, n, c):
+    def __init__(self, n, c, i):
         self.Name = n
         self.Capacity = c
+        self.Num = i
 
 
 # Класс для L-элементов
 class L(Element):
     Inductance = None  # Индуктивность
 
-    def __init__(self, n, i):
+    def __init__(self, n, c, i):
         self.Name = n
-        self.Inductance = i
+        self.Inductance = c
+        self.Num = i
 
 
 # Класс для холостого хода
