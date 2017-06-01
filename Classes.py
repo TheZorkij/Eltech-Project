@@ -50,6 +50,14 @@ class R(Element):
         self.Resistance = r
         self.Num = i
 
+# Класс для нагрузки
+class H(Element):
+    Resistance = None  # Сопротивление
+
+    def __init__(self, n, r, i):
+        self.Name = n
+        self.Resistance = r
+        self.Num = i
 
 # Класс для C-элементов
 class C(Element):

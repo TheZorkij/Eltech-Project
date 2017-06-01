@@ -11,7 +11,6 @@ def mesh_method(chain):
         if i.get_name() == "V":
             i.To.set_voltage(i.Voltage)
             i.From.set_voltage(0)
-            #print(chain.Nodes.index(i.From))
             base_node = chain.Nodes.index(i.From)
             break
     # Если в цепи отсутствует ИН, то базовым узлом назначется первый узел в списке узлов
@@ -62,12 +61,16 @@ def mesh_method(chain):
     # Решаем систему уравнений
     if b is not None:
         v = numpy.linalg.solve(a, b)
+    else:
+        v = 0
+        v is None
     # Записываем узловые напряжения в соответствующие узлы
     j = 0
-    for i in chain.Nodes:
-        if i.Voltage is None:
-            i.set_voltage(int(v[j]))
-            j += 1
+    if v is not None:
+        for i in chain.Nodes:
+            if i.Voltage is None:
+                i.set_voltage(int(v[j]))
+                j += 1
     # Вычисляем напряжения элементов цепи
     for i in chain.Elements:
         if i.Voltage is None:

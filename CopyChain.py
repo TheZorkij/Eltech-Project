@@ -29,6 +29,8 @@ def copy_chain(chain):
             newchain.Elements.append(Classes.C('C', chain.Elements[i].Capacity, i))
         if chain.Elements[i].Name == 'L':
             newchain.Elements.append(Classes.L('L', chain.Elements[i].Inductance, i))
+        if chain.Elements[i].Name == 'H':
+            newchain.Elements.append(Classes.H('H', chain.Elements[i].Resistance, i))
         #print(id(newchain.Elements[i]))
         #print(id(chain.Elements[i]))
 
