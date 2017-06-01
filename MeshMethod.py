@@ -61,12 +61,16 @@ def mesh_method(chain):
     # Решаем систему уравнений
     if b is not None:
         v = numpy.linalg.solve(a, b)
+        flag = 0
+    else:
+        flag = 1
     # Записываем узловые напряжения в соответствующие узлы
     j = 0
-    for i in chain.Nodes:
-        if i.Voltage is None:
-            i.set_voltage(int(v[j]))
-            j += 1
+    if flag != 1:
+        for i in chain.Nodes:
+            if i.Voltage is None:
+                i.set_voltage(int(v[j]))
+                j += 1
     # Вычисляем напряжения элементов цепи
     for i in chain.Elements:
         if i.Voltage is None:

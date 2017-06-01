@@ -80,8 +80,7 @@ def FRandPR(HS_num, HS_den):
     for i in range(0, len(HS_num)):
         temp_num = temp_num + (HS_num[i]) * (1.j * w) ** (len(HS_num) - i)
     for i in range(0, len(HS_num)):
-        temp_den = temp_den + (HS_num[i]) * (1.j * w) ** (len(HS_num) - i)
-    print(temp_num, temp_den)
+        temp_den = temp_den + (HS_den[i]) * (1.j * w) ** (len(HS_den) - i)
     return numpy.abs(numpy.ndarray(shape=numpy.shape(temp_num), dtype=complex, buffer=temp_num/temp_den)), numpy.angle(numpy.ndarray(shape=numpy.shape(temp_num), dtype=complex, buffer=temp_num/temp_den))
 __all__ = ['numpy']
 
