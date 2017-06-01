@@ -139,15 +139,6 @@ def overlay_method(chain):
             v_index.append(chain.Elements[i].Num)
             step_count += 1
 
-
-    #Находим количество шагов МН
-    #for i in range(0, chain.Elements_count):
-    #    if chain.Elements[i].get_name() == "V":
-    #        v_index.append(i)
-    #        #sc_elem.append(chain.Elements[i])
-    #        step_count += 1
-    #    i += 1
-
     #Матрицы результатов
     step_voltages = [[0 for x in range(0, chain.Elements_count)] for y in range(step_count)]
     step_currents = [[0 for x in range(0, chain.Elements_count)] for y in range(step_count)]
@@ -208,22 +199,6 @@ def overlay_method(chain):
                 stepchain.Nodes_count -= 1
             del_i += 1
         #Classes.Chain.output_chain(stepchain)
-            """for i in range(0, stepchain.Elements_count):
-                #if (stepchain.Elements[i].From.Key == sc_to[re_i].Key and stepchain.Elements[i].To.Key != sc_from[re_i].Key) \
-                #        or (stepchain.Elements[i].From.Key == sc_from[re_i].Key and stepchain.Elements[i].To.Key != sc_to[re_i].Key) \
-                #        or (stepchain.Elements[i].From.Key == sc_to[re_i] and stepchain.Elements[i].To.Key != sc_to[re_i].Key) \
-                #        or (stepchain.Elements[i].From.Key == sc_from[re_i].Key and stepchain.Elements[i].To.Key != sc_from[re_i].Key):
-                if stepchain.Elements[i].get_name() == 'R':
-                    if (stepchain.Elements[i].To.Key == sc_from[re_i].Key and stepchain.Elements[i].From.Key != sc_to[re_i].Key and stepchain.Elements[i].From.Key != sc_from[re_i].Key)\
-                            or (stepchain.Elements[i].From.Key == sc_to[re_i].Key and stepchain.Elements[i].To.Key != sc_to[re_i].Key and stepchain.Elements[i].To.Key != sc_from[re_i].Key) \
-                            or (stepchain.Elements[i].From.Key == sc_from[re_i].Key and stepchain.Elements[i].To.Key != sc_to[re_i].Key and stepchain.Elements[i].To.Key != sc_from[re_i].Key) \
-                            or (stepchain.Elements[i].To.Key == sc_to[re_i].Key and stepchain.Elements[i].From.Key != sc_to[re_i].Key and stepchain.Elements[i].From.Key != sc_from[re_i].Key):
-                            #or (stepchain.Elements[i].From.Key != sc_from[re_i].Key and stepchain.Elements[i].From.Key != sc_to[re_i].Key):
-                            #or (stepchain.Elements[i].From.Key == sc_to[re_i].Key and stepchain.Elements[i].To.Key != sc_from[re_i].Key) \
-                            #or (stepchain.Elements[i].To.Key == sc_from[re_i].Key and stepchain.Elements[i].From.Key != sc_to[re_i].Key):
-                        sc_value.append(stepchain.Elements[i].Num)
-                        break"""
-
 
         #Удаляем лишние элементы из цепи
         temp = 0
@@ -276,15 +251,6 @@ def overlay_method(chain):
             for i in range(0, len(sc_elem)):
                 step_currents[step][sc_elem[i].Num] = step_currents[step][sc_value[i]]
 
-
-       #MatrixB[step][0] = step_currents[step][0] / cap[step]
-
-        #for i in range(0, len(react_elem)):
-        #    MatrixA[step-1][i] = step_currents[step][sc_elem[i].Num] / cap[i]
-        #    MatrixB[step-1][i] = step_currents[step][source_num] / cap[i]
-        #    MatrixC[step-1][i] = step_currents[step][sc_elem[i].Num] / cap[i]
-        #    MatrixD[step-1][i] = step_currents[step][source_num] / cap[i]
-
         del stepchain
         del delete_elem
         del delete_node
@@ -296,6 +262,7 @@ def overlay_method(chain):
     print(step_currents)
     print(step_voltages)
 
+    #Заполняем матрицу А
     for i in range(1, step_count):
         for j in range(0, step_count - 1):
             if reaction == 0:
@@ -317,6 +284,7 @@ def overlay_method(chain):
                     if step_currents[i][react_elem[j].Num] != 0:
                         MatrixA[i - 1][j] = MatrixA[i - 1][j] / step_currents[i][react_elem[j].Num]
 
+    # Заполняем матрицу B
     for i in range(0, step_count-1):
         if reaction == 0:
             if react_elem[i].get_name() == 'C':
@@ -337,7 +305,7 @@ def overlay_method(chain):
                 if step_currents[i][0] != 0:
                     MatrixB[i][0] = MatrixB[i][0] / step_currents[i][0]
 
-
+    #Заполняем матрицу С
     if h_elem is not None:
         for i in range(1, step_count):
             if reaction == 0:
@@ -359,14 +327,16 @@ def overlay_method(chain):
                     if step_currents[i][h_elem] != 0:
                         MatrixC[i - 1] = MatrixC[i - 1] / step_currents[i][h_elem]
 
-    if reaction == 0:
-        MatrixD = step_currents[0][h_elem]
-        if step_voltages[0][h_elem] != 0:
-            MatrixD = MatrixD / step_voltages[0][h_elem]
-    else:
-        MatrixD = step_voltages[0][h_elem]
-        if step_currents[0][h_elem] != 0:
-            MatrixD = MatrixD / step_currents[0][h_elem]
+    #Заполняем матрицу D
+    if h_elem is not None:
+        if reaction == 0:
+            MatrixD = step_currents[0][h_elem]
+            if step_voltages[0][h_elem] != 0:
+                MatrixD = MatrixD / step_voltages[0][h_elem]
+        else:
+            MatrixD = step_voltages[0][h_elem]
+            if step_currents[0][h_elem] != 0:
+                MatrixD = MatrixD / step_currents[0][h_elem]
 
     print("Матрица А: ", end=' ')
     print(MatrixA)

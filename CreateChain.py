@@ -121,13 +121,13 @@ def default_chain2():
 
     #chain.Elements_count = 6
     chain.Elements.append(0)
-    chain.Elements[0] = Classes.I('V', 0.001, 0)
+    chain.Elements[0] = Classes.V('V', 1, 0)
     chain.Elements.append(1)
     chain.Elements[1] = Classes.R('R', 2000, 1)
     chain.Elements.append(2)
     chain.Elements[2] = Classes.R('R', 1000, 2)
     chain.Elements.append(3)
-    chain.Elements[3] = Classes.L('L', 58, 3)
+    chain.Elements[3] = Classes.C('C', 0.000058, 3)
     chain.Elements.append(4)
     chain.Elements[4] = Classes.R('R', 2000, 4)
     chain.Elements.append(5)
