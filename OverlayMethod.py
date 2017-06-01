@@ -69,6 +69,7 @@ def overlay_method(chain):
             f = chain.Elements[i].From.Key
             amp = chain.Elements[i].Amperage
             chain.Elements[i] = Classes.V("V", None, i)
+            neighbor = 0
             for j in range(0, chain.Elements_count):
                 if j != i:
                     if (chain.Elements[j].From.Key == t and chain.Elements[j].To.Key == f) or (
@@ -119,13 +120,17 @@ def overlay_method(chain):
                             if chain.Nodes[t - 1].To[q].Num == chain.Elements[j].Num:
                                 del chain.Nodes[t - 1].To[q]
                             q += 1
+                        neighbor = j
                         break
+            #if chain.Elements[i].From == t:
+            #    j = 0
+            #   while j < len()
             # разворачивает R
             if not chain.Nodes[t - 1].From:
                 j = 0
                 while j < len(chain.Nodes[t - 1].To):
                     # for j in range(0, len(chain.Nodes[t-1].To)):
-                    if j != i:
+                    if j != i and j != neighbor:
                         k = chain.Nodes[t - 1].To[j].Num
                         # k_f = chain.Elements[k].From
                         k_t = chain.Elements[k].To.Key
@@ -135,6 +140,20 @@ def overlay_method(chain):
                         del chain.Nodes[t - 1].To[j]
                         break
                     j += 1
+            """if not chain.Nodes[t - 1].To:
+                j = 0
+                while j < len(chain.Nodes[t - 1].From):
+                    # for j in range(0, len(chain.Nodes[t-1].To)):
+                    if j != i:
+                        k = chain.Nodes[t - 1].From[j].Num
+                        # k_f = chain.Elements[k].From
+                        k_t = chain.Elements[k].To.Key
+                        chain.Nodes[t - 1].set_to(chain.Elements[k])
+                        chain.Elements[k].set_from(chain.Nodes[t - 1])
+                        chain.Elements[k].set_to(chain.Nodes[k_t - 1])
+                        del chain.Nodes[t - 1].From[j]
+                        break
+                    j += 1"""
                     # source = chain.Elements[i].Num
             v_index.append(chain.Elements[i].Num)
             step_count += 1
@@ -156,6 +175,7 @@ def overlay_method(chain):
         sc_to = []
         sc_elem = []
         sc_value = []
+        done = []
         stepchain = CopyChain.copy_chain(chain)
         #Classes.Chain.output_chain(stepchain)
         # Определяем узлы, между которыми короткое замыкание
@@ -168,31 +188,98 @@ def overlay_method(chain):
         # Перестраиваем цепь, чтобы обесточенные элементы были подключены к одному узлу
         for re_i in range(0, len(sc_to)):
             del_i = 0
+            c = 0
+            for sc_i in range(0, len(sc_elem)):
+                if sc_i != step:
+                    if stepchain.Elements[sc_elem[sc_i].Num].To == stepchain.Elements[sc_elem[sc_i].Num].From:
+                        c += 1
+                if c == len(sc_elem)-1:
+                    break
             for j in range(0, stepchain.Elements_count):
                 if stepchain.Elements[j].From == sc_from[re_i] and stepchain.Elements[j].To == sc_to[re_i]:
                     stepchain.Elements[j].From = stepchain.Elements[j].To
                     for k in range(0, stepchain.Nodes_count):
                         if stepchain.Nodes[k] == sc_to[re_i]:
                             stepchain.Nodes[k].To.append(stepchain.Elements[j])
+            #для матриц
             for q in range(0, stepchain.Elements_count):
                 if stepchain.Elements[q].To == sc_from[re_i] and stepchain.Elements[q].From != sc_to[re_i] and stepchain.Elements[q].From != sc_from[re_i] and stepchain.Elements[q].get_name() == 'R'\
                         or stepchain.Elements[q].From == sc_to[re_i] and stepchain.Elements[q].To != sc_to[re_i] and stepchain.Elements[q].To != sc_from[re_i] and stepchain.Elements[q].get_name() == 'R':
+                    #if stepchain.Elements[q].Num not in sc_value:
                     sc_value.append(stepchain.Elements[q].Num)
                     break
+            print(1)
             for q in range(0, stepchain.Elements_count):
-                if stepchain.Elements[q].To == sc_from[re_i]:
-                    stepchain.Elements[q].To = sc_to[re_i]
-                    for k in range(0, stepchain.Nodes_count):
-                        if stepchain.Nodes[k] == sc_to[re_i]:
-                            stepchain.Nodes[k].From.append(stepchain.Elements[q])
+                flag = 1
+                #if stepchain.Elements[q].get_name() != 'V':
+                for z in range(0, len(done)):
+                    if stepchain.Elements[q].Num == done[z]:
+                        flag = 0
+                if flag:
+                    if stepchain.Elements[q].To == sc_from[re_i]:# and stepchain.Elements[q].From == sc_to[re_i]:
+                        stepchain.Elements[q].To = sc_to[re_i]
+                        for k in range(0, stepchain.Nodes_count):
+                            if stepchain.Nodes[k] == sc_to[re_i]:
+                                stepchain.Nodes[k].From.append(stepchain.Elements[q])
+                        done.append(stepchain.Elements[q].Num)
+            print(1)
+
+            # Удаляем лишние элементы из цепи
+            temp = 0
+            offset = 0
+            while temp < stepchain.Elements_count:
+                if stepchain.Elements[temp].From == stepchain.Elements[temp].To:
+                    if (temp+offset) not in delete_elem:
+                        delete_elem.append(temp + offset)
+                    trash = stepchain.Elements[temp]
+                    trashnode = stepchain.Elements[temp].From
+                    i = 0
+                    while i < len(done):
+                        if done[i] == stepchain.Elements[temp].Num:
+                            del done[i]
+                        i += 1
+                    del stepchain.Elements[temp]
+                    stepchain.Elements_count -= 1
+                    # print(chain.Elements_count)
+                    temp = -1
+                    offset += 1
+                    for j in range(0, stepchain.Nodes_count):
+                        if stepchain.Nodes[j] == trashnode:
+                            loopcount = len(stepchain.Nodes[j].From)
+                            q = 0
+                            while q < loopcount:
+                                if stepchain.Nodes[j].From[q] == trash:
+                                    del stepchain.Nodes[j].From[q]
+                                    loopcount -= 1
+                                q += 1
+                            q = 0
+                            loopcount = len(stepchain.Nodes[j].To)
+                            while q < loopcount:
+                                if stepchain.Nodes[j].To[q] == trash:
+                                    del stepchain.Nodes[j].To[q]
+                                    loopcount -= 1
+                                q += 1
+                temp += 1
+
+            print(1)
             for j in range(0, stepchain.Nodes_count):
                 if stepchain.Nodes[j] == sc_from[re_i]:
-                    delete_node.append(j)
+                    flag = 0
+                    for z in range(0, len(done)):
+                        if done[z] < stepchain.Elements_count:
+                            if stepchain.Nodes[j].Key != stepchain.Elements[done[z]].To.Key: #and stepchain.Nodes[j].Key != stepchain.Elements[done[z]].From.Key:
+                                flag = 1
+                    if flag:
+                        delete_node.append(j)
             for j in range(0, stepchain.Elements_count):
                 if stepchain.Elements[j].From == stepchain.Nodes[delete_node[del_i]]:
                     for k in range(0, stepchain.Nodes_count):
                         if stepchain.Nodes[k] == sc_to[re_i]:
                             stepchain.Elements[j].set_from(stepchain.Nodes[k])
+                            if stepchain.Elements[j].get_name() == 'V':
+                                for x in range(0, len(sc_elem)):
+                                    if sc_elem[x].Num == stepchain.Elements[j].Num:
+                                        sc_from[x] = stepchain.Elements[j].From
                             stepchain.Nodes[k].From.append(stepchain.Elements[j])
             for j in delete_node:
                 del stepchain.Nodes[j]
@@ -200,38 +287,24 @@ def overlay_method(chain):
             del_i += 1
         #Classes.Chain.output_chain(stepchain)
 
-        #Удаляем лишние элементы из цепи
-        temp = 0
-        offset = 0
-        while temp < stepchain.Elements_count:
-            if stepchain.Elements[temp].From == stepchain.Elements[temp].To:
-                delete_elem.append(temp + offset)
-                trash = stepchain.Elements[temp]
-                trashnode = stepchain.Elements[temp].From
-                del stepchain.Elements[temp]
-                stepchain.Elements_count -= 1
-                #print(chain.Elements_count)
-                temp = -1
-                offset += 1
-                for j in range(0, stepchain.Nodes_count):
-                    if stepchain.Nodes[j] == trashnode:
-                        loopcount = len(stepchain.Nodes[j].From)
-                        q = 0
-                        while q < loopcount:
-                            if stepchain.Nodes[j].From[q] == trash:
-                                del stepchain.Nodes[j].From[q]
-                                loopcount -= 1
-                            q += 1
-                        q = 0
-                        loopcount = len(stepchain.Nodes[j].To)
-                        while q < loopcount:
-                            if stepchain.Nodes[j].To[q] == trash:
-                                del stepchain.Nodes[j].To[q]
-                                loopcount -= 1
-                            q += 1
-            temp += 1
+        for i in range(0, stepchain.Nodes_count):
+            j = 0
+            while j < len(stepchain.Nodes[i].From):
+                if stepchain.Nodes[i].From[j] not in stepchain.Elements:
+                    del stepchain.Nodes[i].From[j]
+                j += 1
+            j = 0
+            while j < len(stepchain.Nodes[i].To):
+                if stepchain.Nodes[i].To[j] not in stepchain.Elements:
+                    del stepchain.Nodes[i].To[j]
+                j += 1
+
+
+
+        print(1)
         #Classes.Chain.output_chain(stepchain)
         #Вызываем МУН
+        #print(1)
         MeshMethod.mesh_method(stepchain)
         Classes.Chain.output_chain(stepchain)
 
@@ -244,9 +317,10 @@ def overlay_method(chain):
                 if i == delete_elem[j]:
                     flag = 0
             if flag:
-                step_currents[step][i] = stepchain.Elements[step_i].Amperage
-                step_voltages[step][i] = stepchain.Elements[step_i].Voltage
-                step_i += 1
+                if step_i < stepchain.Elements_count:
+                    step_currents[step][i] = stepchain.Elements[step_i].Amperage
+                    step_voltages[step][i] = stepchain.Elements[step_i].Voltage
+                    step_i += 1
         if sc_value:
             for i in range(0, len(sc_elem)):
                 step_currents[step][sc_elem[i].Num] = step_currents[step][sc_value[i]]
@@ -258,6 +332,7 @@ def overlay_method(chain):
         del sc_from
         del sc_elem
         del sc_value
+        del done
 
     print(step_currents)
     print(step_voltages)
@@ -362,4 +437,4 @@ def overlay_method(chain):
 
     #Classes.Chain.output_chain(chain)
     #stepchain.output_chain()
-    return chain
+    return chain, MatrixA, MatrixB, MatrixC, MatrixD
