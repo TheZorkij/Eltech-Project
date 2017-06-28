@@ -77,54 +77,10 @@ def Petrov_10var():
         i += 1
 
     chain.Elements.append(Classes.I('I', 1, 0))
-    chain.Elements.append(Classes.R('R', 0.5, 1))
+    chain.Elements.append(Classes.R('R', 5, 1))
     chain.Elements.append(Classes.R('R', 1, 2))
     chain.Elements.append(Classes.C('C', 2, 3))
     chain.Elements.append(Classes.C('C', 1, 4))
-    chain.Elements.append(Classes.H('H', 1, 5))
-
-
-    chain.Nodes[0].set_from(chain.Elements[0])
-    chain.Elements[0].set_to(chain.Nodes[0])
-    chain.Nodes[0].set_from(chain.Elements[1])
-    chain.Elements[1].set_to(chain.Nodes[0])
-    chain.Nodes[0].set_from(chain.Elements[3])
-    chain.Elements[3].set_to(chain.Nodes[0])
-    chain.Nodes[0].set_from(chain.Elements[5])
-    chain.Elements[5].set_to(chain.Nodes[0])
-    chain.Nodes[1].set_to(chain.Elements[0])
-    chain.Elements[0].set_from(chain.Nodes[1])
-    chain.Nodes[1].set_to(chain.Elements[1])
-    chain.Elements[1].set_from(chain.Nodes[1])
-    chain.Nodes[1].set_to(chain.Elements[2])
-    chain.Elements[2].set_from(chain.Nodes[1])
-    chain.Nodes[2].set_from(chain.Elements[2])
-    chain.Elements[2].set_to(chain.Nodes[2])
-    chain.Nodes[2].set_to(chain.Elements[3])
-    chain.Elements[3].set_from(chain.Nodes[2])
-    chain.Nodes[2].set_to(chain.Elements[4])
-    chain.Elements[4].set_from(chain.Nodes[2])
-    chain.Nodes[3].set_from(chain.Elements[4])
-    chain.Elements[4].set_to(chain.Nodes[3])
-    chain.Nodes[3].set_to(chain.Elements[5])
-    chain.Elements[5].set_from(chain.Nodes[3])
-
-    return chain
-
-def Pravilenko_11var():
-    chain = Classes.Chain(4, 6)
-    i = 0
-    while i < chain.Nodes_count:
-        chain.Nodes.append(Classes.Node(i + 1))
-        chain.Nodes[i].To = []
-        chain.Nodes[i].From = []
-        i += 1
-
-    chain.Elements.append(Classes.V('V', 1, 0))
-    chain.Elements.append(Classes.C('C', 1, 1))
-    chain.Elements.append(Classes.R('R', 1, 2))
-    chain.Elements.append(Classes.C('C', 2, 3))
-    chain.Elements.append(Classes.R('R', 2, 4))
     chain.Elements.append(Classes.H('H', 1, 5))
 
 
